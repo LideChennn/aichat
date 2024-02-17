@@ -1,0 +1,21 @@
+/*
+在这个示例中，我们使用Flexbox布局（通过display: flex;）来创建左右两部分。
+左侧部分的宽度设置为45px，右侧部分设置为flex: 1;，这意味着它将占据剩余的空
+间。媒体查询@media (max-width: 600px)用于在窗口宽度小于或等于600px时，将
+左侧部分的宽度设置为0，并将其设置为不可见。当窗口宽度大于600px时，左侧部分将
+自动显示。
+ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    display: flex;
+    height: 100vh;/*设置为视口高度*/
+    overflow: hidden;
+}
+#app{
+    display: flex;
+    flex-grow: 1;
+}

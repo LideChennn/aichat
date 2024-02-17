@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>title</title>
+
+    <!--引入vue element基于vue-->
+    <script src="/js/vue.js"></script>
+    <script src="/js/axios-0.18.0.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/show_content.css">
+</head>
+
+<body>
+<div id="app">
+    <input type="button" value="一个按钮" @click="show()">
+</div>
+
+
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                //vue数据
+            }
+        },
+        methods: {
+            //vue方法
+            show() {
+                localStorage.setItem('myData', "ssss");
+
+                // 跳转到另一个页面
+                window.location.href = 'show_content.html';
+            }
+        }
+
+    })
+</script>
+</body>
+</html>

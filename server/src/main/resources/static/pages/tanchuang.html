@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>酷弹框</title>
+  <link rel="stylesheet" href="../css/tanchuang.css">
+  <script src="../js/vue.js"></script>
+  <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+</head>
+<body>
+<div id="app">
+  <button>
+
+  </button>
+  <button @click="toggleModal">打开弹框</button>
+  <div class="modal" :class="{ 'is-active': showModal }">
+    <div class="modal-background" @click="toggleModal"></div>
+    <div class="modal-content">
+      <h2>你好，这是一个酷弹框！</h2>
+      <p>这里可以放置任何内容。</p>
+      <button @click="toggleModal">关闭弹框</button>
+    </div>
+  </div>
+</div>
+<script src="../js/tanchuang.js"></script>
+</body>
+</html>

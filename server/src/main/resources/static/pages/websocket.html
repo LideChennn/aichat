@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue WebSocket Example</title>
+</head>
+<body>
+<div id="app">
+    <h1>WebSocket Test</h1>
+    <div>
+        <input type="text" v-model="message" placeholder="Type your message here">
+        <button @click="sendMessage">Send</button>
+    </div>
+    <div>
+        <h2>Received messages:</h2>
+        {{receivedMessages}}
+    </div>
+</div>
+
+<!-- Add the script tags for the required libraries -->
+<script src="../plugins/sockjs-client-1.6.1/dist/sockjs.js"></script>
+<script src="../plugins/stomp-websocket-2.3.4/lib/stomp.js"></script>
+<script src="../js/vue.js"></script>
+<script>
+    const socket = new SockJS('http://localhost/websocket');
+    const stompClient = Stomp.over(socket);
+
+    new Vue({
+        el: '#app',
+        data: {
+            stompClient: stompClient,
+            message: '',
+            receivedMessages: '',
+        },
+        mounted() {
+            this.connect();
+        },
+        methods: {
+            //连接使用STOMP客户端连接到后端的WebSocket服务器。连接成功时调用
+            connect() {
+                //headers: 消息的头信息，表示为一个JavaScript对象。在这个例子中，我们传递一个空对象{}，表示没有额外的头信息。
+                this.stompClient.connect({}, this.onConnected, this.onError);
+            },
+            //发生错误时调用onError方法。当成功连接到WebSocket服务器时调用。在这个方法中，我们订阅
+            onConnected() {
+                this.stompClient.subscribe('/topic/messages', this.onMessageReceived);
+            },
+            //当收到后端发送的消息时调用。我们将消息的content属性添加到receivedMessages数组中，以便在前端显示。
+            onMessageReceived(payload) {
+                this.receivedMessages += (JSON.parse(payload.body).content);
+            },
+            //当用户单击发送按钮时调用。我们使用STOMP客户端将消息发送到/app/send目的地。同时，将message属性重置为空字符串。
+            sendMessage() {
+                //headers: 消息的头信息，表示为一个JavaScript对象。在这个例子中，我们传递一个空对象{}，表示没有额外的头信息。
+                this.stompClient.send('/app/send', {},
+                    JSON.stringify(
+                        {
+                            content: this.message,
+                            userId: 1
+                        }
+                    ));
+                this.message = '';
+            },
+            onError() {
+                console.error('WebSocket连接失败');
+            },
+        },
+    });
+
+</script>
+</body>
+</html>

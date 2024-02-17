@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Box</title>
+    <link rel="stylesheet" href="../css/chatbox.css">
+<!--    <link rel="stylesheet" href="../css/awesome.css">-->
+    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+</head>
+<body>
+<div id="app">
+    <div class="chat-box">
+        <div class="chat-box-header">
+            Model-GPT5
+            <button>
+                <i class="fa fa-edit" ></i>
+            </button>
+
+        </div>
+        <div class="messages" ref="messageContainer">
+            <div v-for="(message, index) in messages"
+                 :key="index" class="message"
+                 :class="{ 'message-right': message.isMine }">
+                <div class="message-content">
+                    <div >
+                        <img :src="message.isMine ? '../images/avatar-right.png' : '../images/avatar-left.png'"
+                             :class="['avatar', message.isMine ? 'avatar-right' : 'avatar-left']"  alt="null"/>
+                    </div>
+                    <div class="message-text" >{{ message.text }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="input-area">
+            <div class="input-block">
+                <input v-model="inputText"
+                       @keyup.enter="sendMessage"
+                       placeholder="Type your message...">
+                <button @click="sendMessage">
+                    <i class="fa fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/vue.js"></script>
+<script src="../js/chatbox.js"></script>
+</body>
+</html>

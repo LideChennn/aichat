@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Chat Button</title>
+    <link rel="stylesheet" href="../css/newchat.css">
+    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+</head>
+<body>
+<div id="app">
+    <div class="left-header">
+        <ul class="left-header-ul">
+            <li @click="showModal();" class="new-chat-btn">+ &nbsp;&nbsp;&nbsp;New chat</li>
+        </ul>
+    </div>
+
+    <div class="modal" v-show="modalVisible">
+        <div class="modal-content">
+            <div class="modal-left">
+                <h1>ChatGPT</h1>
+            </div>
+            <div class="modal-right">
+                <button class="close-button" @click="cancel()">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h3>NewChat</h3>
+                <div id="typed-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{typedText}}</div>
+                <input type="text" v-model="chatInput" placeholder="please input prompt...">
+                <button class="custom-button">确认</button> <!-- 添加新按钮 -->
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../js/vue.js"></script>
+<script src="../js/axios-0.18.0.js"></script>
+<script src="../js/newchat.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+aichat:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: localhost
+    port: 3306
+    database: chatgpt
+    username: root
+    password: 2030502103
+    type: com.alibaba.druid.pool.DruidDataSource
+  port: 80
+  openai:
+    key: sk-xxxxxxxxxxxxxxxxxxx
+    hostname: 127.0.0.1
+    port: 10809
+    timeout: 120
+    chatgpt:
+      model: gpt-3.5-turbo
+      systemRole: You are a helpful assistant
+  log:
+    name: log.txt
+    path: /root/ai-chat

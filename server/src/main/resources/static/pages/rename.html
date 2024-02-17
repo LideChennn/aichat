@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件重命名示例</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <h1>文件重命名示例</h1>
+    <label>当前文件名:</label>
+    <input type="text" v-model="currentFilename" readonly>
+    <br>
+    <label>新文件名:</label>
+    <input type="text" v-model="newFilename">
+    <br>
+    <button @click="renameFile">重命名文件</button>
+</div>
+<script src="../js/rename.js"></script>
+</body>
+</html>

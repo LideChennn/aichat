@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>原文</title>
+    <script src="/js/vue.js"></script>
+    <script src="/js/axios-0.18.0.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/show_content.css">
+    <link rel="icon" href="../images/chatgpt.png" type="image/x-icon">
+</head>
+
+<body>
+<div id="app">
+    <!--主体代码-->
+    <div class="demo">
+        <h1 style="color: #0a81fd">徐涛考研政治核心教案原文</h1>
+
+        <p>{{this.texts[0]}}</p>
+        <p>{{this.texts[1]}}</p>
+        <p>{{this.texts[2]}}</p>
+        <p>{{this.texts[3]}}</p>
+    </div>
+
+    <div class="footer">This will always appear at the bottom of the page, but <strong>not fixed</strong>.</div>
+
+
+</div>
+
+
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                //vue数据
+                texts: ["I often find myself designing a website where the footer must rest at the bottom of the page, even if the content\n" +
+                "        above it is too short to push it to the bottom of the viewport naturally.",
+                    "However, if the content is taller than the user’s viewport, then the footer should disappear from view as it\n" +
+                    "        would normally, resting at the bottom of the page (not fixed to the viewport)."
+                ]
+            }
+        },
+        mounted() {
+            axios.get('/user/get_texts').then(response => {
+                this.texts = response.data.data
+            }).catch(error => {
+                console.error(error);
+            });
+        },
+        methods: {
+            //vue方法
+        }
+
+    })
+</script>
+</body>
+</html>

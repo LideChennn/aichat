@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <link rel="stylesheet" href="../css/signup.css">
+    <script src="../js/vue.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+</head>
+<body>
+<div id="app">
+    <div class="signup-container">
+        <h3>欢迎注册</h3>
+        <p class="signup-message" v-if="signupMessage !== ''">{{signupMessage}}</p>
+        <div class="input-wrapper">
+            <input type="text" id="username" v-model="user.username" @focus="signupMessage = ''" required
+                   placeholder=" "
+                   class="input-wrapper-text">
+            <label for="username" class="input-wrapper-label">Username</label>
+        </div>
+        <div class="input-wrapper">
+            <input id="password" v-model="user.password" @focus="signupMessage = ''" type="Password" required
+                   placeholder=" ">
+            <label for="password">Password</label>
+        </div>
+        <div class="input-wrapper">
+            <input id="confirmPassword" v-model="confirmPassword" @focus="signupMessage = ''" type="Password" required
+                   placeholder=" ">
+            <label for="confirmPassword">Confirm psw</label>
+        </div>
+        <button type="submit" class="signup-container-button-submit" @click="signup()">注册</button>
+        <p style="color: #726e6c">
+            已经拥有账号?
+            <button class="signup-container-button-signup" @click="gotoLogin()">登录</button>
+        </p>
+    </div>
+</div>
+<script src="../js/signup.js"></script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/chatgpt.css">
+    <link rel="stylesheet" type="text/css" href="/css/chatgpt-right.css">
+    <link rel="stylesheet" type="text/css" href="/css/chatgpt-left.css">
+    <link rel="stylesheet" type="text/css" href="/css/chatgpt-dialog.css">
+    <link rel="stylesheet" href="/plugins/font-awesome/css/font-awesome.min.css">
+    <script src="/js/vue.js"></script>
+    <script src="/js/axios-0.18.0.js"></script>
+</head>
+<body>
+<!--<div id="app">-->
+<div id="app">
+    <!--弹窗-->
+    <div class="modal" v-show="modalVisible">
+        <div class="modal-content">
+            <div class="modal-left">
+                <h1>ChatGPT</h1>
+            </div>
+            <div class="modal-right">
+                <button class="close-button" @click="cancel()">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h3>NewChat</h3>
+                <div id="typed-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{typedText}}</div>
+                <input type="text" v-model="chatInput" placeholder="please input prompt...">
+                <button class="custom-button">确认</button> <!-- 添加新按钮 -->
+            </div>
+        </div>
+    </div>
+
+    <div class="left">
+        <div class="left-header">
+            <ul class="left-header-ul">
+                <li @click="showModal()" class="new-chat-btn">+ &nbsp;&nbsp;&nbsp;New chat</li>
+            </ul>
+        </div>
+        <div class="history-list">
+            <ul class="history-list-ul">
+                <!--
+:class绑定设置了一个对象，其中键（key）是类名，
+值（value）是一个布尔表达式。在这个例子中，类名是active，
+布尔表达式是selectedHistory === index。
+当selectedHistory与当前迭代的index相等时，布尔表达式的值为true，
+这意味着active类将被添加到<li>元素上。如果表达式的值为false，
+则active类将从元素上移除。
+这使得您可以根据用户与列表项的交互来改变列表项的样式。
+在这个示例中，当用户点击一个列表项时，
+selectHistory(index)方法被调用，
+selectedHistory可能会被更新为当前项的index，
+从而为选定的历史记录添加active类。
+                -->
+                <li v-for="(history, index) in histories"
+                    :key="history.historyId"
+                    @click="selectHistory(index)"
+                    :class="{active: selectedHistory === index}">
+                    <i class="fa fa-comments-o" style="font-size: 15px"></i>
+                    &nbsp;&nbsp;&nbsp;&nbsp;{{history.historyName}}
+                    <button v-if="selectedHistory === index">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div class="left-footer">
+            <ul class="left-footer-ul">
+                <li><i class="fa fa-trash" style="font-size: 15px"></i>&nbsp;&nbsp;&nbsp;Clear conversations</li>
+                <li><i class="fa fa-user" style="font-size: 15px"></i>&nbsp;&nbsp;&nbsp;My account</li>
+                <li><i class="fa fa-sign-out" style="font-size: 15px"></i> &nbsp;&nbsp;&nbsp;Log out</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="right">
+        <div class="chat-window">
+            <!--selectedHistory选择的历史记录不为空-->
+            <div v-if="selectedHistory !== null" class="chat-box">
+                <div class="chat-box-header">
+                    {{histories[selectedHistory].historyName}}
+                    <button><i class="fa fa-edit"></i></button>
+                </div>
+                <div class="messages" ref="messageContainer">
+                    <div v-for="(message, index) in messages"
+                         :key="index" class="message"
+                         :class="{ 'message-right': message.isMine }">
+                        <div class="message-content">
+                            <div>
+                                <img :src="message.isMine ? '../images/avatar-right.png' : '../images/avatar-left.png'"
+                                     :class="['avatar', message.isMine ? 'avatar-right' : 'avatar-left']" alt="null"/>
+                            </div>
+                            <div class="message-text">{{ message.text }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-area">
+                    <div class="input-block">
+                        <input v-model="inputText"
+                               @keyup.enter="sendMessage"
+                               placeholder="Type your message...">
+                        <button @click="sendMessage">
+                            <i class="fa fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div v-else>
+                <h3>Select a history to start chatting</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/chatgpt.js"></script>
+
+</body>
+</html>

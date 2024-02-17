@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/chatgpt.css">
+    <link rel="stylesheet" type="text/css" href="/css/chatgpt-right.css">
+    <link rel="stylesheet" type="text/css" href="/css/chatgpt-left.css">
+    <link rel="stylesheet" type="text/css" href="/css/chatgpt-dialog.css">
+    <link rel="stylesheet" href="../plugins/elementui/index.css">
+    <link rel="stylesheet" href="/plugins/font-awesome/css/font-awesome.min.css">
+    <script src="../js/jquery.min.js"></script>
+    <script src="/js/vue.js"></script>
+    <script src="/js/axios-0.18.0.js"></script>
+    <script src="../plugins/sockjs-client-1.6.1/dist/sockjs.js"></script>
+    <script src="../plugins/stomp-websocket-2.3.4/lib/stomp.js"></script>
+    <link rel="icon" href="../images/chatgpt.png" type="image/x-icon">
+    <title>chat</title>
+</head>
+<body>
+<!--<div id="app">-->
+<div id="app">
+    <!--弹窗-->
+    <div class="modal" v-show="modalVisible">
+        <div class="modal-content">
+            <div class="modal-left">
+                <h1>ChatGPT</h1>
+            </div>
+            <div class="modal-right">
+                <button class="close-button" @click="cancel()">
+                    <i class="fa fa-times"></i>
+                </button>
+                <h3>NewChat</h3>
+                <div id="typed-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{typedText}}</div>
+                <input type="text" v-model="historyInput" placeholder="please input prompt...">
+                <button class="custom-button" @click="submitData()">确认</button> <!-- 添加新按钮 -->
+            </div>
+        </div>
+    </div>
+
+    <div class="left">
+        <div class="left-header">
+            <ul class="left-header-ul">
+                <li @click="selectedHistory = null" class="new-chat-btn">+ &nbsp;&nbsp;&nbsp;New chat</li>
+            </ul>
+        </div>
+        <div class="history-list">
+            <ul class="history-list-ul">
+                <li v-for="(history, index) in histories"
+                    :key="history.historyId"
+                    @click="selectHistory(index)"
+                    :class="{active: selectedHistory === index}">
+                    <i class="fa fa-comments-o" style="font-size: 15px"></i>
+                    &nbsp;&nbsp;&nbsp;&nbsp;{{history.historyName}}
+                    <button v-if="selectedHistory === index"
+                            @click.stop="showConfirm = !showConfirm; confirmIndex = index" class="delete-button">
+                        <!--@click.stop 是一个事件修饰符，用于阻止事件冒泡。事件冒泡是指一个事件触发后，会从触发元素向上级元素传播，直至根元素-->
+                        <i class="fa fa-trash"></i>
+                    </button>
+                    <div v-if="showConfirm && confirmIndex === index" class="confirm-popup">
+                        <button @click.stop="deleteHistory()">
+                            <i class="fa fa-check"></i>
+                        </button>
+                        <button @click.stop="showConfirm = false">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="left-footer">
+            <ul class="left-footer-ul">
+                <li v-show="showDeleteAllHistories === false" @click.stop="showAndHideDeleteAllHistories()">
+                    <i class="fa fa-trash" style="font-size: 15px"></i>&nbsp;&nbsp;&nbsp;Clear conversations
+                </li>
+                <li v-show="showDeleteAllHistories === true" @click.stop="deleteAllHistories()">
+                    <i class="fa fa-check" style="font-size: 15px"></i>&nbsp;&nbsp;&nbsp;Confirm clear all
+                </li>
+                <li><i class="fa fa-user" style="font-size: 15px"></i>&nbsp;&nbsp;&nbsp;My account</li>
+                <li @click="logout()"><i class="fa fa-sign-out" style="font-size: 15px"></i> &nbsp;&nbsp;&nbsp;Log out</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="right">
+        <div class="chat-window">
+            <div v-if="selectedHistory !== null" class="chat-box">
+                <div class="chat-box-header">
+
+                    <button class="close-button" v-if="windowWidth <= 600" @click="selectedHistory = null" style="margin-top: 1.8%;font-size: 18px;color: #aeb9c0">
+                        <i class="fa fa-times"></i>
+                    </button>
+
+                    <template v-if="!showEditHistoryName">
+                        {{histories[selectedHistory].historyName}}
+                        <button @click.stop="toggleEditHistoryName()"><i class="fa fa-edit"></i></button>
+                    </template>
+                    <template v-else>
+                        <input v-model="editedHistoryName" class="history-name-input" type="text"></input>
+                        <button @click.stop="updateHistoryName()">
+                            <i class="fa fa-check" style="font-size: 15px;color: #4086ed"></i>
+                        </button>
+                    </template>
+                </div>
+
+                <div class="messages" ref="messageContainer">
+                    <div v-for="(message, index) in messages"
+                         :key="index" class="message"
+                         :class="{ 'message-right': message.isMine }">
+                        <div class="message-content">
+                            <div>
+                                <img :src="message.isMine ? userHeadImg : aiHeadImg"
+                                     :class="['avatar', message.isMine ? 'avatar-right' : 'avatar-left']" alt="null"/>
+                            </div>
+                            <div class="message-text">{{ message.text }}</div>
+                        </div>
+                        <div>
+                            <button class="show_content_button"
+                                    v-if="!message.isMine && message.texts&& message.texts.length > 0" @click="showContent(message.texts)">查看原文</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-area">
+                    <div class="input-block">
+                        <input v-model="inputText"
+                               @keyup.enter="sendMessage"
+                               placeholder="Type your message...">
+                        <button @click="sendMessage">
+                            <i class="fa fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div v-else class="new-chat-box">
+                <div class="dropdown">
+                    <button class="dropdown-btn" @click="toggleDropdown()">
+                        <div style="color: #60426c">Model</div>
+                        <div>{{ selectedOption ? selectedOption.label : '请选择一个选项' }}</div>
+                        <i class="fa fa-chevron-down dropdown-icon"></i>
+                    </button>
+                    <div style="height: 10px"></div>
+                    <ul class="dropdown-list" v-show="isDropdownVisible === true">
+                        <li class="dropdown-item" v-for="option in options" :key="option.promptId"
+                            @click="selectOption(option)">
+                            {{option.label}}
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="new-chat-box-logo" >
+                    <h1 style="color: #cdcdcd">ChatGPT</h1>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <div class="new-chat-box-logo-plus">
+                        <h5 style="color: #917203">PLUS</h5>
+                    </div>
+                </div>
+
+                <div class="new-chat-box-input">
+                    <div class="input-area">
+                        <div class="input-block">
+                            <input v-model="inputText"
+                                   @keyup.enter="earlySendMsg()"
+                                   placeholder="Type your messages...">
+                            <button @click="earlySendMsg()">
+                                <i class="fa fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="../plugins/elementui/index.js"></script>
+<script src="/js/chatgpt.js"></script>
+
+</body>
+</html>

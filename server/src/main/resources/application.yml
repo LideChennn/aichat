@@ -1,0 +1,77 @@
+server:
+  port: ${aichat.port}
+
+spring:
+  profiles:
+    active: dev
+  main:
+    allow-circular-references: true
+  datasource:
+    driver-class-name: ${aichat.datasource.driver-class-name}
+    url: jdbc:mysql://${aichat.datasource.host}:${aichat.datasource.port}/${aichat.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${aichat.datasource.username}
+    password: ${aichat.datasource.password}
+    type: ${aichat.datasource.type}
+  redis:
+    host: ${aichat.redis.host}
+    port: ${aichat.redis.port}
+    password: ${aichat.redis.password}
+    database: ${aichat.redis.database}
+
+mybatis:
+  #mapper配置文件
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: cn.edu.gdpu.aichat.entity
+  configuration:
+    #开启驼峰命名
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    cn:
+      edu:
+        gdpu:
+          aichat:
+            mapper: debug
+            service: info
+            controller: info
+  file:
+    name: ${aichat.log.name}
+    path: ${aichat.log.path}
+
+aichat:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    admin-secret-key: itcast
+    # 设置jwt过期时间
+    admin-ttl: 72000000
+    # 设置前端传递过来的令牌名称
+    admin-token-name: token
+    user-secret-key: chenlide
+    user-ttl: 72000000
+    user-token-name: authentication
+  alioss:
+    access-key-id: ${aichat.alioss.access-key-id}
+    endpoint: ${aichat.alioss.endpoint}
+    access-key-secret: ${aichat.alioss.access-key-secret}
+    bucket-name: ${aichat.alioss.bucket-name}
+  wechat:
+    appid: ${aichat.wechat.appid}
+    secret: ${aichat.wechat.secret}
+    mchid: ${aichat.wechat.mchid}
+    mchSerialNo: ${aichat.wechat.mchSerialNo}
+    privateKeyFilePath: ${aichat.wechat.privateKeyFilePath}
+    apiV3Key: ${aichat.wechat.apiV3Key}
+    weChatPayCertFilePath: ${aichat.wechat.weChatPayCertFilePath}
+    notifyUrl: ${aichat.wechat.notifyUrl}
+    refundNotifyUrl: ${aichat.wechat.refundNotifyUrl}
+
+#openai
+openai:
+  key: ${aichat.openai.key}
+  hostname: ${aichat.openai.hostname}
+  port: ${aichat.openai.port}
+  timeout: ${aichat.openai.timeout}
+  chatgpt:
+    model: ${aichat.openai.chatgpt.model}
+    systemRole: ${aichat.openai.chatgpt.systemRole}

@@ -1,0 +1,128 @@
+.left {
+    display: flex;
+    width: 240px;
+    flex-direction: column;
+    justify-content: space-between; /* 将子元素在垂直方向上分开 */
+    background-color: #222325;
+    transition: all 0.3s;
+}
+
+ li{
+    padding: 25px;
+    color: white;
+    font-size: 13px;
+}
+ li{
+    padding: 25px;
+    color: white;
+    font-size: 13px;
+}
+
+li:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* 鼠标悬停时的背景颜色 */
+    cursor: pointer;
+}
+li.active {
+    background-color: rgba(0, 0, 0, 0.2); /* 点击后（选中状态）的背景颜色 */
+}
+
+li:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* 鼠标悬停时的背景颜色 */
+    cursor: pointer;
+}
+li.active {
+    background-color: rgba(0, 0, 0, 0.2); /* 点击后（选中状态）的背景颜色 */
+}
+
+.new-chat-btn:hover{
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+ul.left-header-ul li{
+    padding: 10px;
+    margin: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #4e4e50;
+    border-radius : 5px;
+    color: #f7f7f7;
+}
+
+
+.left-header {
+    height: 60px; /* 设置 left-header 的高度 */
+}
+.history-list{
+    flex-grow: 1;
+    overflow: auto;
+}
+.left-footer {
+    height: 200px; /* 设置 left-footer 的高度 */
+}
+
+.history-list-ul li{
+    position: relative
+}
+/* 设置按钮背景为黑色 */
+.history-list-ul li.active .delete-button {
+    background-color: #242527;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    left: 83%;
+}
+.history-list-ul li.active .delete-button .fa:hover {
+    color: white;
+}
+/* 设置图标颜色为白色 */
+.history-list-ul li.active .delete-button .fa {
+    color: #dcdcdc;
+    font-size: 15px;
+}
+/*小弹窗*/
+.confirm-popup {
+    display: inline;
+    background-color: #1d1e20;
+    position: absolute;
+    right: 7%;
+}
+.confirm-popup button {
+    background-color: #1d1e20;
+    color: white; /* 设置按钮文字颜色 */
+    cursor: pointer;
+    border: none;
+    text-align: center;
+    font-size: 14px;
+    margin-right: 10px; /* 添加右边距 */
+    transition-duration: 0.4s;
+}
+.confirm-popup button:last-child {
+    margin-right: 0; /* 为最后一个按钮移除右边距，避免额外空间 */
+}
+
+
+
+/* 修改整体滚动条样式 */
+::-webkit-scrollbar {
+    width: 10px; /* 设置滚动条宽度 */
+    background-color: #353535; /* 设置滚动条背景颜色 */
+}
+/* 修改滚动条滑块样式 */
+::-webkit-scrollbar-thumb {
+    background-color: #353535; /* 设置滑块颜色 */
+    border-radius: 5px; /* 设置滑块圆角 */
+}
+/* 修改滚动条滑块悬停样式 */
+::-webkit-scrollbar-thumb:hover {
+    background-color: #f7f7f7; /* 设置滑块悬停颜色 */
+}
+/*
+----------------------------------------------
+ */
+/* 当窗口宽度小于等于 600px 时，隐藏左边部分 一定要防在最下边*/
+@media (max-width: 700px) {
+    .left {
+        width: 0;
+        visibility: hidden;
+    }
+}

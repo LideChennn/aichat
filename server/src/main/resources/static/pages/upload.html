@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Avatar Upload</title>
+    <style>
+        .avatar-uploader {
+            position: relative;
+            display: inline-block;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .file-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="avatar-uploader">
+        <img :src="avatarUrl" alt="Avatar" class="avatar">
+        <input
+                type="file"
+                class="file-input"
+                @change="handleFileUpload"
+                accept="image/*">
+        </input>
+    </div>
+</div>
+
+<script src="/js/vue.js"></script>
+<script src="/js/axios-0.18.0.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            avatarUrl: "../images/123.png", // 这里是原始头像的 URL，你可以根据需要替换
+        },
+        methods: {
+            handleFileUpload(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    this.uploadFile(file);
+                }
+            },
+             uploadFile(file) {
+                const formData = new FormData();
+                formData.append("avatar", file);
+
+                // 替换为你的后端接口 URL
+                const apiUrl = "/uploadAvatar/1";
+                axios.post(apiUrl, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }).then((response) => {
+                    // 根据后端返回的数据更新头像 URL
+                    // 你需要根据实际返回的数据结构进行调整
+                    this.fetchAvatar();
+                }).catch((error) => {
+                    console.error("上传失败:", error);
+                });
+            },
+            fetchAvatar() {
+                axios.get('/avatar/1', {responseType: 'arraybuffer'})
+                    .then((response) => {
+                        const base64 = btoa(
+                            new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), '')
+                        );
+                        this.avatarUrl = 'data:image/png;base64,' + base64;
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            },
+        },
+    });
+</script>
+</body>
+</html>
